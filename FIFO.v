@@ -9,7 +9,7 @@ module FIFO #(
     input  wire                  rd_en,
     input  wire [DATA_WIDTH-1:0] data_in,
     
-    output wire [DATA_WIDTH-1:0] data_out,
+    output reg [DATA_WIDTH-1:0] data_out,
     output wire                  full,
     output wire                  empty
 );
@@ -31,11 +31,19 @@ module FIFO #(
             
             if (rd_en && !empty) begin 
                 r_ptr <= r_ptr + 1'b1;
+                data_out <= mem[r_ptr[ADDR_WIDTH-1:0]];
             end
 
         end
     end
+
     assign empty = (w_ptr == r_ptr);
+
     assign full = (w_ptr[ADDR_WIDTH] != r_ptr[ADDR_WIDTH]) && (w_ptr[ADDR_WIDTH-1:0] == r_ptr[ADDR_WIDTH-1:0]);
-    assign data_out = mem[r_ptr[ADDR_WIDTH-1:0]];
+
+    
+
+
+    //assign data_out = mem[r_ptr[ADDR_WIDTH-1:0]];
+
 endmodule

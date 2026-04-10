@@ -29,9 +29,8 @@ initial begin
     
     #150 rst = 0; 
 
-    
+    wr_en <= 1;
     @(posedge clk) begin
-        wr_en <= 1;
         data_in <= 8'h1F;
         @(posedge clk) data_in <= 8'h23;
         @(posedge clk) data_in <= 8'h5A;
@@ -39,19 +38,51 @@ initial begin
         @(posedge clk) data_in <= 8'hB2;
         @(posedge clk) data_in <= 8'hB3;
         @(posedge clk) data_in <= 8'hB4;
-        @(posedge clk) wr_en <= 0; 
-
+        @(posedge clk) data_in <= 8'hA1;
+        @(posedge clk) data_in <= 8'hA2;
+        @(posedge clk) data_in <= 8'h3F;
+        @(posedge clk) data_in <= 8'hBA;
+        @(posedge clk) data_in <= 8'hBA;
+        @(posedge clk) data_in <= 8'h8B;
+        @(posedge clk) data_in <= 8'hA7;
+        @(posedge clk) data_in <= 8'hBA;
+        @(posedge clk) data_in <= 8'hBC;
+        @(posedge clk) data_in <= 8'h58;
+        @(posedge clk) data_in <= 8'hBA;
+        @(posedge clk) data_in <= 8'h91;
+        @(posedge clk) data_in <= 8'hC4;
+        @(posedge clk) data_in <= 8'hFF;
+        @(posedge clk) wr_en <=0;
     end
 
     #200; 
-
-   
-    
 
     #200; 
     
    
     @(posedge clk) rd_en = 1;
+    @(posedge clk);
+    @(posedge clk);
+    @(posedge clk);
+    @(posedge clk);
+    @(posedge clk);
+    @(posedge clk);
+    @(posedge clk);
+    @(posedge clk);
+    @(posedge clk);
+    @(posedge clk);
+    @(posedge clk);
+    @(posedge clk);
+    @(posedge clk);
+    @(posedge clk);
+    @(posedge clk);
+    @(posedge clk);
+    @(posedge clk);
+    @(posedge clk);
+    @(posedge clk);
+    @(posedge clk);
+    @(posedge clk);
+    @(posedge clk);
     @(posedge clk);
     @(posedge clk);
     @(posedge clk);
