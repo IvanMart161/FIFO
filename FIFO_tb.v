@@ -91,7 +91,7 @@ initial begin
 
     
     #1000; 
-    $display("Testbench finished!");
+    $display("Testbench finished");
     $finish;
 end 
     
