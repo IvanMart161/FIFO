@@ -2,97 +2,105 @@
 
 module FIFO_tb;
 
-parameter DATA_WIDTH = 8, ADDR_WIDTH = 4;
 
-reg clk, rst, wr_en, rd_en;
-reg [DATA_WIDTH-1:0] data_in;
-wire [DATA_WIDTH-1:0] data_out;
-wire full, empty;
+    parameter DATA_WIDTH = 8;
+    parameter ADDR_WIDTH = 4;
 
-FIFO #(DATA_WIDTH, ADDR_WIDTH) uut (
-    .clk(clk), .rst(rst), .wr_en(wr_en), 
-    .rd_en(rd_en), .data_in(data_in), .data_out(data_out), 
-    .full(full), .empty(empty)
-);
 
-always #50 clk = ~clk;
+    reg clk;
+    reg rst;
+    reg wr_en;
+    reg rd_en;
+    reg [DATA_WIDTH-1:0] data_in;
+    wire [DATA_WIDTH-1:0] data_out;
+    wire full;
+    wire empty;
 
-initial begin 
-    $dumpfile("fifo_test.vcd"); 
-    $dumpvars(0, FIFO_tb);
+  
+    FIFO #(DATA_WIDTH, ADDR_WIDTH) uut (
+        .clk(clk), 
+        .rst(rst), 
+        .wr_en(wr_en), 
+        .rd_en(rd_en), 
+        .data_in(data_in), 
+        .data_out(data_out), 
+        .full(full), 
+        .empty(empty)
+    );
 
-    clk = 0;
-    rst = 1;
-    wr_en <= 0;
-    rd_en <= 0;
-    data_in = 0;
+
+    always #50 clk = ~clk;
+
     
-    #150 rst = 0; 
+    task push_data(input [DATA_WIDTH-1:0] value);
+        begin
+            
+            while (full) begin
+                @(posedge clk);
+            end
+            
+           
+            data_in <= value;
+            wr_en   <= 1;
+            @(posedge clk);
+            wr_en   <= 0;
+            data_in <= 8'hzz; 
+        end
+    endtask
 
-    wr_en <= 1;
-    @(posedge clk) begin
-        data_in <= 8'h1F;
-        @(posedge clk) data_in <= 8'h23;
-        @(posedge clk) data_in <= 8'h5A;
-        @(posedge clk) data_in <= 8'hB1;
-        @(posedge clk) data_in <= 8'hB2;
-        @(posedge clk) data_in <= 8'hB3;
-        @(posedge clk) data_in <= 8'hB4;
-        @(posedge clk) data_in <= 8'hA1;
-        @(posedge clk) data_in <= 8'hA2;
-        @(posedge clk) data_in <= 8'h3F;
-        @(posedge clk) data_in <= 8'hBA;
-        @(posedge clk) data_in <= 8'hBA;
-        @(posedge clk) data_in <= 8'h8B;
-        @(posedge clk) data_in <= 8'hA7;
-        @(posedge clk) data_in <= 8'hBA;
-        @(posedge clk) data_in <= 8'hBC;
-        @(posedge clk) data_in <= 8'h58;
-        @(posedge clk) data_in <= 8'hBA;
-        @(posedge clk) data_in <= 8'h91;
-        @(posedge clk) data_in <= 8'hC4;
-        @(posedge clk) data_in <= 8'hFF;
-        @(posedge clk) wr_en <=0;
-    end
-
-    #200; 
-
-    #200; 
-    
    
-    @(posedge clk) rd_en = 1;
-    @(posedge clk);
-    @(posedge clk);
-    @(posedge clk);
-    @(posedge clk);
-    @(posedge clk);
-    @(posedge clk);
-    @(posedge clk);
-    @(posedge clk);
-    @(posedge clk);
-    @(posedge clk);
-    @(posedge clk);
-    @(posedge clk);
-    @(posedge clk);
-    @(posedge clk);
-    @(posedge clk);
-    @(posedge clk);
-    @(posedge clk);
-    @(posedge clk);
-    @(posedge clk);
-    @(posedge clk);
-    @(posedge clk);
-    @(posedge clk);
-    @(posedge clk);
-    @(posedge clk);
-    @(posedge clk);
-    @(posedge clk) rd_en = 0;  
-
+    task pop_data();
+        begin
+            while (empty) begin
+                @(posedge clk);
+            end
+            
+            rd_en <= 1;
+            @(posedge clk);
+            rd_en <= 0;
+        end
+    endtask
 
     
-    #1000; 
-    $display("Testbench finished");
-    $finish;
-end 
+    initial begin 
+        
+        $dumpfile("fifo_test.vcd"); 
+        $dumpvars(0, FIFO_tb);
+
+     
+        clk = 0;
+        rst = 1;
+        wr_en = 0;
+        rd_en = 0;
+        data_in = 0;
+        
+       
+        #150 rst = 0; 
+
+ 
+        push_data(8'h1F); push_data(8'h23); push_data(8'h5A); push_data(8'hB1);
+        push_data(8'hB2); push_data(8'hB3); push_data(8'hB4); push_data(8'hA1);
+        push_data(8'hA2); push_data(8'h3F); push_data(8'hBA); push_data(8'hBB);
+        push_data(8'h8B); push_data(8'hA7); push_data(8'hB9); push_data(8'hBC);
+
+        fork
+            begin
+                push_data(8'h58); 
+                push_data(8'hBA); 
+                push_data(8'h91); 
+                push_data(8'hC4); 
+                push_data(8'hFF);
+            end
+            
+            begin
+                #500; 
+                repeat(21) pop_data();
+            end
+        join
+
+        #500;
+        $display("Testbench finished at %0t", $time);
+        $finish;
+    end 
     
 endmodule
