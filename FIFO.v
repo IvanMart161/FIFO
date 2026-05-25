@@ -1,3 +1,11 @@
+//-------------------------------------------------------
+// File name   : FIFO.v
+// Developers  : I.A. Martynenko
+// Email       : <MartynenkoIA@mpei.ru>
+// Date        : 25.05.2026
+// Version     : 1.0
+// Description : Advanced testbench for FIFO with Backpressure mechanism.
+//-------------------------------------------------------
 module FIFO #(
     parameter DATA_WIDTH = 8,
     parameter ADDR_WIDTH = 4,

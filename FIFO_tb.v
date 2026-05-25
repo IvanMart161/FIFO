@@ -1,3 +1,12 @@
+//-------------------------------------------------------
+// File name   : FIFO_tb.v
+// Developers  : I.A. Martynenko
+// Email       : <MartynenkoIA@mpei.ru>
+// Date        : 25.05.2026
+// Version     : 1.0
+// Description : Advanced testbench for FIFO with Backpressure mechanism.
+//-------------------------------------------------------
+
 `timescale 1ns/1ps
 
 module FIFO_tb;
