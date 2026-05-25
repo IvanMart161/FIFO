@@ -99,7 +99,7 @@ module FIFO_tb;
         join
 
         #500;
-        $display("Testbench finished at %0t", $time);
+        $display("Testbench has finished", $time);
         $finish;
     end 
     
